@@ -35,9 +35,7 @@ function App() {
   }
 
   const handleChangeNextAudio = () => {
-    if (currMusicIndex == MUSICS.name.length - 1) {
-      setCurrMusicIndex(0)
-    } else {
+    if (musRef.current) {
       setCurrMusicIndex(cur => cur + 1)
     }
   }
@@ -62,20 +60,42 @@ function App() {
       musRef.current.currentTime = newTime
     }
   }
-  const onEndedAudio = () => { // При окончании музыки начинаеться следующая
-    setCurrMusicIndex(prev => prev + 1)
-  }
-
   const isLoadedMetaData = () => { // если при переключении трека предыдущий играл, то следующий тоже начинает сразу играть
     if (isStartSong) {
       musRef.current.play()
     }
   }
 
+  useEffect(() => {
+    if (currMusicIndex === MUSICS.name.length) {
+      setIsStartSong(false)
+      setCurrMusicIndex(0)
+    }
+  }, [currMusicIndex])
+
+  useEffect(() => {
+    if (navigator.mediaSession) {
+      navigator.mediaSession.setActionHandler('play' || 'pause', handlePlayPauseAudio)
+      //navigator.mediaSession.setActionHandler('pause', handlePlayPauseAudio)
+      navigator.mediaSession.setActionHandler('nexttrack', handleChangeNextAudio)
+      navigator.mediaSession.setActionHandler('previoustrack', handleChangePrevAudio)
+    }
+    return () => {
+      if (navigator.mediaSession) {
+        navigator.mediaSession.setActionHandler('play', null)
+        navigator.mediaSession.setActionHandler('pause', null)
+        navigator.mediaSession.setActionHandler('nexttrack', null)
+        navigator.mediaSession.setActionHandler('previoustrack', null)
+      }
+    }
+  }, [])
+
   return (
     <div className="App">
       <audio ref={musRef}
-        onEnded={onEndedAudio}
+        onPause={(() => setIsStartSong(false))}
+        onPlay={(() => setIsStartSong(true))}
+        onEnded={handleChangeNextAudio}
         onLoadedMetadata={
           isLoadedMetaData} src={`/Music/REJDI_-_${MUSICS.name[currMusicIndex]}.mp3`}></audio>
       <main>
