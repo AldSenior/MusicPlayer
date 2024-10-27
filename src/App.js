@@ -73,10 +73,9 @@ function App() {
     }
   }, [currMusicIndex])
 
-  useEffect(() => {
+  useEffect(() => {//управление через наушники
     if (navigator.mediaSession) {
       navigator.mediaSession.setActionHandler('play' || 'pause', handlePlayPauseAudio)
-      //navigator.mediaSession.setActionHandler('pause', handlePlayPauseAudio)
       navigator.mediaSession.setActionHandler('nexttrack', handleChangeNextAudio)
       navigator.mediaSession.setActionHandler('previoustrack', handleChangePrevAudio)
     }
