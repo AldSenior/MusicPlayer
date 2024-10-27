@@ -97,7 +97,7 @@ function App() {
         onPlay={(() => setIsStartSong(true))}
         onEnded={handleChangeNextAudio}
         onLoadedMetadata={
-          isLoadedMetaData} src={`/Music/REJDI_-_${MUSICS.name[currMusicIndex]}.mp3`}></audio>
+          isLoadedMetaData} src={`/Music/${MUSICS.name[currMusicIndex]}.mp3`}></audio>
       <main>
 
       </main>
